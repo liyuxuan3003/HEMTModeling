@@ -1,0 +1,237 @@
+\section{漏极电流计算}
+
+\subsection{漏极电流的核心公式推导}
+漂移电流反映了载流子在电场作用下的运动
+\begin{Equation}
+    I=\mu Q E
+\end{Equation}
+扩散电流反映了载流子在梯度作用下的运动
+\begin{Equation}
+    I=D\dv{Q}{x}=\mu V_{th}\dv{Q}{x}
+\end{Equation}
+这里，$E$是电场，$Q$代表$x$处的线电荷密度，$D$在该式中代表扩散系数（而不是态密度），根据爱因斯坦关系式$D=\mu V_{th}$，扩散系数可以转化为迁移率，使漂移与扩散均能以迁移率表征。
+
+在HEMT中，漂移电流和扩散电流均应当被考虑，有
+\begin{Equation}
+    I_d=-\mu_0 Q_{ch}\dv{\psi}{x}+\mu_0 V_{th}\dv{Q_{ch}}{x}
+\end{Equation}
+该处$\mu_0$为\cx{GaN} HEMT的低场迁移率，取$\mu_0=\SI{0.17}{m^2.V^{-1}.s^{-1}}$。
+
+该式中$Q_{ch}=q n_s$即沿沟道方向单位长度的电荷量，参见\xref{def:Qch}，而电场$E=-\dv*{\psi}{x}$则以电势负梯度的形式出现，当然，我们知道$\psi$是表面势而非电势，但由于$\psi=E_f+V_x$中的费米能级$E_f$并不随$x$变化，因此表面势梯度$-\dv*{\psi}{x}$实质上等同于电势梯度$-\dv*{V_x}{x}$。
+
+依据\xref{def:Qch}和\xref{fml:电子气浓度与表面势}实现$Q_{ch}=C_g(V_{go}-\psi)$的代换
+\begin{Equation}
+    I_d=-\mu_0 W C_g(V_{go}-\psi)\dv{\psi}{x}-\mu_0 W C_g V_{th}\dv{\psi}{x}
+\end{Equation}
+这样一来就将变量完全转换到$\psi$上了，稍作整理
+\begin{Equation}
+    I_d=-\mu_0 W C_g(V_{go}+V_{th}-\psi)\dv{\psi}{x}
+\end{Equation}
+两边同乘$\dx$，准备积分
+\begin{Equation}
+    I_d\dx=-\mu_0 W C_g(V_{go}+V_{th}-\psi)\dd{\psi}
+\end{Equation}
+积分，右侧积分限是$\psi_s$至$\psi_d$，左侧积分限是$0$至$L$，请注意$I_d$是无关$x$的常数
+\begin{Equation}
+    \Int[0][L]I_d\dx=\Int[\psi_s][\psi_d]-\mu_0 W C_g(V_{go}+V_{th}-\psi)\dd{\psi}
+\end{Equation}
+积分结果是
+\begin{Equation}
+    I_d L=\mu_0 W C_g\eval{\qty[\frac{1}{2}\psi^2-(V_{go}+V_{th})\psi]}_{\psi_s}^{\psi_d}
+\end{Equation}
+即
+\begin{Equation}
+    I_d L=\mu_0 W C_g\qty[\frac{1}{2}(\psi_d^2-\psi_s^2)-(V_{go}+V_{th})(\psi_d-\psi_s)]
+\end{Equation}
+考虑到$\psi_d^2-\psi_s^2=(\psi_d+\psi_s)(\psi_d-\psi_s)$
+\begin{Equation}
+    I_d L=\mu_0 W C_g\qty[\frac{1}{2}(\psi_d+\psi_s)(\psi_d-\psi_s)-(V_{go}+V_{th})(\psi_d-\psi_s)]
+\end{Equation}
+将$L$移至右侧，引用\xref{def:psim}即$\psi_m=(\psi_d+\psi_s)/2$，简记$\psi_{ds}=\psi_d-\psi_s$并将其提出
+\begin{Equation}
+    I_d=\mu_0 C_g \frac{W}{L}\qty(\psi_m-V_{go}-V_{th})\psi_{ds}
+\end{Equation}
+应指出的是，上述计算出的电流是沿$x$正方向，即源至漏，而$I_d$通常是漏至源，故还应取负。
+\begin{BoxFormula}[漏极电流]
+    漏极电流$I_d$可以表示为
+    \begin{Equation}
+        I_d=\mu_0 C_g \frac{W}{L}\qty(V_{go}+V_{th}-\psi_m)\psi_{ds}
+    \end{Equation}
+\end{BoxFormula}
+
+\xref{fig:漏极电流的核心公式}对$I_d$进行了可视化，取$W=L=\SI{1}{um}$，我们注意到
+\begin{itemize}
+    \item $I_d$的数量级在$\si{mA}$级，$I_d$随$V_d$和$V_g$的变化规律与经典的MOSFET模型是相似的。
+    \item $I_d$在$V_g$较小时存在极大的反向电流，这是不正常的，存疑。
+    \item $I_d$随着$V_d$的增大而增大，但是当$V_d$较大时反而减小，这是尚未考虑饱和所致。
+\end{itemize}
+应指出的是，对于晶体管，饱和有两种形式
+\begin{itemize}
+    \item 夹断饱和：随着$V_d$的增大，载流子浓度在漏端减小至零而使沟道夹断，电流饱和。
+    \item 速度饱和：随着$V_d$的增大，载流子速度受到散射效应的限制达到饱和，电流饱和。
+\end{itemize}
+而HEMT器件中，速度饱和是饱和的主要形式（稍后将会讨论其），夹断饱和并不会发生。
+\begin{Figure}[漏极电流的核心公式]
+    \begin{FigureSub}[转移特性;转移特性漏极电流]
+        \includegraphics[scale=0.8]{build/Chapter02C_01a.fig.pdf}
+    \end{FigureSub}
+    \begin{FigureSub}[输出特性;输出特性漏极电流]
+        \includegraphics[scale=0.8]{build/Chapter02C_01b.fig.pdf}
+    \end{FigureSub}\\ \vspace{0.25cm}
+    \begin{FigureSub}[三维图;三维图漏极电流]
+        \includegraphics[scale=0.8]{build/Chapter02C_01c.fig.pdf}
+    \end{FigureSub}
+\end{Figure}
+
+\subsection{迁移率退化}
+迁移率退化（Mobility Degradation）反映的是栅压$V_g$导致的纵向电场对迁移率的影响。
+\begin{BoxFormula}[迁移率退化]
+    迁移率退化通过对迁移率修正建模
+    \begin{Equation}
+        \mu_{eff}=\frac{\mu_0}{1+\mu_a E_{y,eff}+\mu_bE_{y,eff}^2}
+    \end{Equation}
+\end{BoxFormula}
+其中$E_{y,eff}$是纵向有效电场，定义如下
+\begin{BoxDefinition}[$E_{y,eff}$][Eyeff]
+    $E_{y,eff}$定义为\footnote[2]{$E_{y,eff}$定义的实质是$E_{y,eff}=|Q_{ch}/\epsilon|$，且$Q_{ch}=C_{g}(V_{go}-\psi)$中取$\psi=\psi_m$。}
+    \begin{Equation}
+        E_{y,eff}=\frac{C_g}{\epsilon}|V_{go}-\psi_m|
+    \end{Equation}
+\end{BoxDefinition}
+
+其中$\mu_a$和$\mu_b$分别是迁移率退化的系数，取$\mu_a=\SI{e-9}{V^{-1}}$和$\mu_b=\SI{e-18}{V^{-1}}$。
+
+\xref{fig:迁移率受迁移率退化的影响}展示了考虑迁移率退化的迁移率$\mu_{eff}$随$V_g,V_d$的变化，观察到
+\begin{itemize}
+    \item 注意！此处的$z$轴是上下翻转的，下方迁移率较大，上方迁移率较小。
+    \item $\mu_{eff}$随$V_{g}$的增大而增大，当$V_{g}>V_{off}$时随$V_{d}$的增大而减小。
+    \item $\mu_{eff}$曲面中的折痕是其表达式中的绝对值所致。
+    \item $\mu_{eff}$相较低场迁移率$\mu_0$并未减小太多，这表明迁移率降低的影响并不显著。
+\end{itemize}
+
+
+\begin{Figure}[迁移率受迁移率退化的影响]
+    \includegraphics[scale=0.8]{build/Chapter02C_01i.fig.pdf}
+\end{Figure}
+
+\xref{fig:漏极电流--迁移率退化}对比了迁移率取$\mu_0,\mu_{eff}$下的电流曲线，观察到
+\begin{itemize}
+    \item 迁移率降低下$\mu_{eff}$相较$\mu_0$并未改变太多，故电流曲线也只是稍有偏移。
+    \item 迁移率降低会使$I_d$比原先略小一些。
+\end{itemize}
+\begin{Figure}[漏极电流--迁移率退化]
+    \begin{FigureSub}[转移特性;转移特性迁移率退化]
+        \includegraphics[scale=0.8]{build/Chapter02C_01d.fig.pdf}
+    \end{FigureSub}
+    \begin{FigureSub}[输出特性;输出特性迁移率退化]
+        \includegraphics[scale=0.8]{build/Chapter02C_01e.fig.pdf}
+    \end{FigureSub}
+\end{Figure}
+
+\subsection{速度饱和效应}
+速度饱和效应（Velocity Saturation）是指，载流子的速度应当随着$V_{d}$的增大而增大，但实际上，载流子的速度并不可能无限增加。当载流子的速度很快时，由于晶格的散射作用，载流子的速度$v$趋于定值$v_{sat}$，这就是速度饱和效应。速度饱和同样可以通过迁移率的降低来建模。
+\begin{BoxFormula}[速度饱和效应]
+    速度饱和效应通过对迁移率修正建模
+    \begin{Equation}
+        \mu_{sat}=\frac{\mu_{eff}}{\sqrt{1+(E_x\mu_{eff}/v_{sat})^2}}
+    \end{Equation}
+\end{BoxFormula}
+
+其中$E_x$是横向电场，定义如下
+\begin{BoxDefinition}[$E_x$][Ex]
+    $E_x$定义为
+    \begin{Equation}
+        E_x=\frac{\psi_d-\psi_s}{L}
+    \end{Equation}
+\end{BoxDefinition}
+其中$v_{sat}$是饱和速度，取$v_{sat}=\SI{1.9e5}{m.s^{-1}}$。
+
+\xref{fig:迁移率受速度饱和效应的影响}展示了考虑速度饱和效应的迁移率$\mu_{sat}$随$V_g,V_d$的变化，观察到
+\begin{itemize}
+    \item $\mu_{sat}$主要受$V_d$的影响，$\mu_{sat}$随着$V_d$的增大迅速减小并接近零。
+    \item $\mu_{sat}$会显著小于$\mu_0$，这表明，速度饱和效应对迁移率的影响非常大。
+\end{itemize}
+\begin{Figure}[迁移率受速度饱和效应的影响]
+    \includegraphics[scale=0.8]{build/Chapter02C_01j.fig.pdf}
+\end{Figure}
+
+\xref{fig:漏极电流--速度饱和效应}展示了速度饱和效应下的电流曲线，观察到
+\begin{itemize}
+    \item 请注意，\xref{fig:漏极电流--速度饱和效应}的纵坐标尺度相较前续图像发生了变化。
+    \item $I_d$的典型值在考虑速度饱和后，从原先的十几$\si{mA}$减小到了几$\si{mA}$。
+    \item $I_d$仍然会随$V_d$的增大而减小，但从原先近似抛物型的下降变为近似线性的下降。
+\end{itemize}
+\begin{Figure}[漏极电流--速度饱和效应]
+    \begin{FigureSub}[转移特性;转移特性速度饱和]
+        \includegraphics[scale=0.8]{build/Chapter02C_01f.fig.pdf}
+    \end{FigureSub}
+    \begin{FigureSub}[输出特性;输出特性速度饱和]
+        \includegraphics[scale=0.8]{build/Chapter02C_01g.fig.pdf}
+    \end{FigureSub}\\ \vspace{0.25cm}
+    \begin{FigureSub}[三维图;三维图速度饱和]
+        \includegraphics[scale=0.8]{build/Chapter02C_01h.fig.pdf}
+    \end{FigureSub}
+\end{Figure}
+
+\subsection{沟道调制效应}
+沟道调制效应（Channel Length Modulation, CLM）反映为对$I_d$的修正。
+
+\begin{BoxFormula}[沟道调制效应]
+    沟道调制效应通过对$I_d$的修正建模
+    \begin{Equation}
+        I_{d,CLM}=I_d[1+\lambda(V_{dsx}-V_{ds,eff})]
+    \end{Equation}
+\end{BoxFormula}
+
+这里$\lambda$是沟道调制效应的系数，默认值为$\lambda=\SI{0.0}{V^{-1}}$，这里为考察其影响取$\lambda=\SI{0.1}{V^{-1}}$。
+
+其中$V_{dsx}$是一个相当接近$V_{ds}$的表达式
+\begin{BoxDefinition}[$V_{dsx}$][Vdsx]
+    $V_{dsx}$定义为
+    \begin{Equation}
+        V_{dsx}=\sqrt{V_{ds}^2+0.01}
+    \end{Equation}
+\end{BoxDefinition}\goodbreak
+其中$V_{ds,eff}$是一个与$V_{ds}$相关的表达式\nopagebreak
+\begin{BoxDefinition}[$V_{ds,eff}$][Vdseff]
+    $V_{ds,eff}$定义为
+    \begin{Equation}
+        V_{ds,eff}=V_{ds}\qty[1+\qty(\frac{V_{ds}}{V_{ds,sat}})^{\delta}]^{-1/\delta}
+    \end{Equation}
+\end{BoxDefinition}
+
+其中$V_{ds,sat}$是一个由$V_{go,eff}$决定的表达式，$V_{go,eff}$参见\xref{def:Vgoeff}
+\begin{BoxDefinition}[$V_{ds,sat}$][Vdssat]
+    $V_{ds,sat}$定义为
+    \begin{Equation}
+        V_{ds,sat}=\frac{(2v_{sat}/\mu_{eff})L\cdot V_{go,eff}}{(2v_{sat}/\mu_{eff})L+V_{go,eff}}
+    \end{Equation}
+\end{BoxDefinition}
+
+这里$\delta$是$V_{ds,eff}$中的指数，取$\delta=2$。
+
+\begin{Figure}[漏极电流--沟道调制效应]
+    \begin{FigureSub}[转移特性;转移特性沟道调制]
+        \includegraphics[scale=0.8]{build/Chapter02C_01k.fig.pdf}
+    \end{FigureSub}
+    \begin{FigureSub}[输出特性;输出特性沟道调制]
+        \includegraphics[scale=0.8]{build/Chapter02C_01l.fig.pdf}
+    \end{FigureSub}
+\end{Figure}
+
+\xref{fig:漏极电流--沟道调制效应}展示了沟道调制对$I_d$的影响，输出特性中$I_d$会因该效应略微上翘些。
+
+\subsection{漏致势垒降低}
+漏致势垒降低（Drain Induced Barrier Lowering, DIBL）反映为对$V_{off}$的修正。
+\begin{BoxFormula}[漏至势垒降低]
+    漏致势垒降低通过对$V_{off}$的修正建模
+    \begin{Equation}
+        V_{off,DIBL}=V_{off}-\eta_0\frac{V_{dsx}V_{ds,scale}}{\sqrt{V_{dsx}^2+V_{ds,scale}^2}}
+    \end{Equation}
+\end{BoxFormula}
+这里$\eta_0$和$V_{ds,scale}$均为DIBL相关系数，取$\eta_0=\SI{e-3}{}$和$V_{ds,scale}=\SI{5}{V}$。
+
+\begin{Figure}[漏致势垒降低]
+    \includegraphics[scale=0.8]{build/Chapter02C_01m.fig.pdf}
+\end{Figure}
+\xref{fig:漏致势垒降低}展示了漏致势垒降低对$V_{off}$的影响，其使$V_{off}$随$V_d$减小，但影响非常轻微。
