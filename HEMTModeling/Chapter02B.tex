@@ -1,0 +1,132 @@
+\section{电荷量计算}
+在开始之前，我们先引入沟道电荷密度$Q_{ch}=q n_s$的定义。我们知道$n_s$是沟道二维电子气的数密度，而$Q_{ch}$则是数密度$n_s$对应的电荷密度$q_{ns}$（记作$Q$，但它是电荷密度而非电荷）。
+
+\begin{BoxDefinition}[$Q_{ch}$][Qch]
+    $Q_{ch}$定义为
+    \begin{Equation}
+        Q_{ch}=qn_s
+    \end{Equation}
+\end{BoxDefinition}
+
+漏端电荷$Q_d$和源端电荷$Q_s$分别可以用下式计算\setpeq{电荷量计算}
+\begin{Equation}&[1]
+    Q_d=-\Int[0][L]\qty(\frac{x}{L})WQ_{ch}\dx\qquad
+    Q_s=-\Int[0][L]\qty(1-\frac{x}{L})WQ_{ch}\dx
+\end{Equation}
+关于该公式，可以解释如下
+\begin{itemize}
+    \item $Q_{ch}$代表沟道单位面积电荷（面密度），$WQ_{ch}$代表沟道单位长度电荷（线密度）。
+    \item $Q_d$和$Q_s$共同分配沟道中的总电荷，在沟道的不同位置$x$处，这种分配的比例是不同的，具体而言，在$x$处，$Q_d$的分配比例是$x/L$，$Q_s$的分配比例是$1-x/L$，这非常合理：$x\to L$接近漏端时电荷完全由$Q_d$享有，$x\to 0$接近源端时电荷完全由$Q_s$享有。
+    \item 负号代表了电子的负电性：沟道中的载流子是二维电子气，带负电。
+\end{itemize}
+
+栅端电荷$Q_g$势必要与$Q_d$和$Q_s$保持电荷守恒
+\begin{Equation}&[2]
+    Q_g=-Q_d-Q_s=\Int[0][L]WQ_{ch}\dx
+\end{Equation}
+而本节的目的，就是求出$Q_g,Q_d,Q_s$的积分，从而得到电荷与$V_g,V_d,V_s$的关系。
+
+\subsection{计算栅电荷}
+在\xrefpeq{2}中代入\xref{def:Qch}和\xref{fml:电子气浓度与表面势}
+\begin{Equation}&[3]
+    Q_g=\Int[0][L]WC_g(V_{go}-\psi)\dx
+\end{Equation}
+该积分的难点在于，我们事实上并不清楚$\psi$随$x$的函数表达式，究其根本，是因为我们不知道$\psi=E_f+V_x$中的$V_x$是如何随$x$变化的。但并不妨碍，有文献给出了$\dx$和$\dd{\psi}$间的关系
+\begin{Equation}&[4]
+    \dx=\frac{L(V_{go}-\psi+V_{th})}{(V_{go}-\psi_m+V_{th})(\psi_d-\psi_s)}\dd{\psi}
+\end{Equation}
+这里$\psi_s,\psi_d$分别是源端和漏端的表面势，而$\psi_m$是两者的平均数。
+\begin{BoxDefinition}[$\psi_s$][psis]
+    $\psi_s$定义为
+    \begin{Equation}
+        \psi_s=E_f+V_s
+    \end{Equation}
+\end{BoxDefinition}
+\begin{BoxDefinition}[$\psi_d$][psid]
+    $\psi_d$定义为
+    \begin{Equation}
+        \psi_d=E_f+V_d
+    \end{Equation}
+\end{BoxDefinition}
+\begin{BoxDefinition}[$\psi_m$][psim]
+    $\psi_m$定义为
+    \begin{Equation}
+        \psi_m=\frac{\psi_s+\psi_d}{2}
+    \end{Equation}
+\end{BoxDefinition}\setpeq{电荷量计算}
+
+现在，将\xrefpeq{4}代入\xrefpeq{3}，积分上下限改换为$\psi_s$和$\psi_d$，得到的积分结果是
+\begin{BoxFormula}[栅端电荷]
+    栅端电荷$Q_g$遵从以下公式
+    \begin{Split}
+        Q_g=\frac{C_g L W}{3(V_{go}-\psi_m+V_{th})}\Bigl\{&3V_{go}^2+(\psi_d^2+\psi_s^2+\psi_d\psi_s)\\
+        -&3V_{go}(\psi_d+\psi_s-V_{th})\\
+        -&3V_{th}\psi_m\Bigr\}
+    \end{Split}
+\end{BoxFormula}
+
+\subsection{计算漏电荷}\setpeq{电荷量计算}
+在\xrefpeq{1}中代入\xref{def:Qch}和\xref{fml:电子气浓度与表面势}
+\begin{Equation}&[5]
+    Q_d=-\Int[0][L]\frac{x}{L}WC_g(V_{go}-\psi)\dx
+\end{Equation}
+然而，有所不同的是，这里不仅出现了$\dx$，还有$x$，因此我们需要对\xrefpeq{4}积分
+\begin{Equation}&[6]
+    \Int[0][x]\dx'=\Int[\psi_s][\psi]\frac{L(V_{go}-\psi'+V_{th})}{(V_{go}-\psi_m+V_{th})(\psi_d-\psi_s)}\dd{\psi'}
+\end{Equation}
+这里$x'$和$\psi'$是临时引入的积分变量，结果为
+\begin{Equation}&[7]
+    x=\frac{L(\psi-\psi_s)}{(V_{go}-\psi_m+V_{th})(\psi_d-\psi_s)}\qty(V_{go}+V_{th}-\frac{\psi+\psi_s}{2})
+\end{Equation}
+现在，将\xrefpeq{7}和\xrefpeq{4}代入\xrefpeq{5}，积分上下限改换为$\psi_s$和$\psi_d$，得到的积分结果是
+\begin{BoxFormula}[漏端电荷]
+    漏端电荷$Q_d$遵从以下公式
+    \begin{Split}
+        Q_d=\frac{C_gLW}{120(V_{go}-\psi_m+V_{th})^2}\Bigl\{&12\psi_d^3+8\psi_s^3+\psi_s^2[16\psi_d-5(5V_{th}+8V_{go})]\\
+        +&2\psi_s[12\psi_d^2-5\psi_d(5V_{th}+8V_{go})+10(V_{th}+V_{go})(V_{th}+4V_{go})]\\
+        -&15\psi_d^2(3V_{th}+4V_{go})-60V_{go}(V_{th}+V_{go})^2\\
+        +&20\psi_d(V_{th}+V_{go})(2V_{th}+5V_{go})\Bigr\}
+    \end{Split}
+\end{BoxFormula}
+
+\subsection{电荷量的可视化}
+
+\xref{fig:电荷量的二维图}展示了$Q_s,Q_d,Q_g$在取定$V_d$或$V_g$随另一方变化的曲线（$V_s=0$）
+\begin{itemize}
+    \item 此处取$W=L=\SI{1}{u}$，故$Q_s,Q_d,Q_g$的数量级是$\SI{1e-2}{C.m^{-2}}$。
+    \item $Q_s$和$Q_d$通常为负，且两者近似相等。
+    \item $Q_g$通常为正，且$Q_g$的大小差不都是$Q_s,Q_d$的两倍，这是因为$Q_g=-Q_s-Q_d$。
+    \item $Q_s,Q_d,Q_g$在$V_g$某个取值附近出现了趋于无穷的发散现象，这是不正常的，存疑。
+\end{itemize}
+\begin{Figure}[电荷量的二维图]
+    \begin{FigureSub}[取$V_d=\SI{0}{V}$;电荷Vd0]
+        \includegraphics[scale=0.8]{build/Chapter02B_01a.fig.pdf}
+    \end{FigureSub}
+    \begin{FigureSub}[取$V_d=\SI{1}{V}$;电荷Vd1]
+        \includegraphics[scale=0.8]{build/Chapter02B_01b.fig.pdf}
+    \end{FigureSub}\\ \vspace{0.25cm}
+    \begin{FigureSub}[取$V_g=\SI{0}{V}$;电荷Vg0]
+        \includegraphics[scale=0.8]{build/Chapter02B_01c.fig.pdf}
+    \end{FigureSub}
+    \begin{FigureSub}[取$V_g=\SI{1}{V}$;电荷Vg1]
+        \includegraphics[scale=0.8]{build/Chapter02B_01d.fig.pdf}
+    \end{FigureSub}
+\end{Figure}
+
+\xref{fig:电荷量的三维图}通过三维图展现了$Q_s,Q_d,Q_g$随$V_d,V_g$的变化规律，注意到
+\begin{itemize}
+    \item $Q_s,Q_d,Q_g$主要随$V_g$变化，电荷量的大小均大致随$V_g$的增大而增大。
+    \item $Q_s,Q_d,Q_g$基本不随$V_d$变化而变化。
+\end{itemize}
+
+\begin{Figure}[电荷量的三维图]
+    \begin{FigureSub}[源端电荷]
+        \includegraphics[scale=0.75]{build/Chapter02B_01g.fig.pdf}
+    \end{FigureSub}
+    \begin{FigureSub}[漏端电荷]
+        \includegraphics[scale=0.75]{build/Chapter02B_01f.fig.pdf}
+    \end{FigureSub}\\ \vspace{0.25cm}
+    \begin{FigureSub}[栅端电荷]
+        \includegraphics[scale=0.75]{build/Chapter02B_01e.fig.pdf}
+    \end{FigureSub}
+\end{Figure}

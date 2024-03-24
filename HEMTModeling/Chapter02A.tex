@@ -1,0 +1,315 @@
+\section{表面势计算}
+
+\subsection{费米能级与表面势的定义}
+表面势$\psi$是费米能级$E_f$和电势$V_x$的和，表面势（Surface Potenial, SP）的计算是ASM HEMT模型的基础。这里有必要解释的一点是，或许注意到费米能级$E_f$这样具有能量量纲的量，为何会与$V_x$这样具有电势量纲的量并列？前者单位是$\si{eV}$，后者单位是$\si{V}$，这两者完全不同的！但是，在半导体物理中，能量和电势之间往往需要频繁的转化，为了避免来回转换的繁琐，本文中，能量均以其对应的电势代为表示，例如，本文中的费米能级$E_f$看起来是形如$E_f=\SI{0.65}{V}$的量，而通常意义上的费米能级，用这里的记号表示就是$qE_f=\SI{0.65}{eV}$。
+
+
+\begin{BoxDefinition}[表面势]
+    表面势定义为费米能级与电势之和
+    \begin{Equation}&[]
+        \psi=E_f+V_x
+    \end{Equation}
+\end{BoxDefinition}
+
+表面势定义中的电势$V_x$是什么？这里我们讨论的是HEMT在一定偏压$V_g,V_d,V_s$下，在沟道上不同位置处的表面势$\psi=\psi(x)$。其中，费米能级$E_f$仅由栅压$V_g$确定且与$x$无关，这一点很容易理解，栅压$V_g$可以弯曲半导体表面的能带结构从而影响$E_f$的大小。电势$V_x$则是与位置$x$有关的量$V_x=V_x(x)$，显然，源端$V_x(0)=V_s$，漏端$V_x(L)=V_d$，电势$V_x(x)$从源至漏逐渐从$V_s$增大至$V_d$，电势$V_x(x)$在其中的变化过程较为复杂，且我们不太关心，之后涉及到$V_x(x)$时会依据一些间接结论绕过去。因此，表面势$\psi$的计算就归结为$E_f$的计算。
+
+\subsection{费米能级遵从的方程组的引入}\setpeq{费米能级遵从的方程组的引入}
+
+我们知道，\cx{GaN} HEMT的沟道是由\cx{GaN}和\cx{AlGaN}异质结中的二维电子气构成。异质结是指由两种带隙宽度不同的半导体构成的结，异质结界面处，由于两侧带隙不同，导带会发生不连续，导带底在界面\cx{GaN}侧的一段距离内甚至低于费米能级，该薄层区域内将产生极高浓度的电子，故称为二维电子气（2DEG）。该区域中的电子，若从量子力学的观点看，即被定域在由导带底构成的势阱中。势阱可以近似视为三角形势阱，通过求解薛定谔方程，可以求得
+\begin{Equation}&[1]
+    E_n=\frac{\hbar^2}{2\mne}\qty(\frac{3}{2}\pi q \Emf)^{2/3}\qty(n+\frac{2}{3})
+\end{Equation}
+这里$E_n$是电子的第$n$个本征能级，$\mne$是有效电子质量，$\Emf$是势阱中的电场。
+
+此处我们仅关心前两个本征能级$E_0$和$E_1$，其中$k_0,k_1$包含了\xrefpeq{1}中除$\Emf$外的系数
+\begin{Equation}&[2]
+    E_0=k_0\Emf^{2/3}\qquad E_1=k_1\Emf^{2/3}
+\end{Equation}
+泊松方程给出了电场$\Emf$和电子气密度$n_s$之间的关系
+\begin{Equation}&[3]
+    \epsilon\Emf=qn_s
+\end{Equation}
+这里$\epsilon=\eAlGaN=\SI{10.66e-11}{F.m^{-1}}$，本文所有可能出现的$\epsilon$都是指$\eAlGaN$。另外，这里的$n_s$是二维电子气的面密度，单位$\si{m^{-2}}$。它是指：沿沟长$\SI{1}{m}$，沿沟宽$\SI{1}{m}$，有多少个电子？
+
+通过\xrefpeq{3}，我们可以将\xrefpeq{2}中的$\Emf$转化为$n_s$
+\begin{Equation}
+    E_0=\gamma_0n_s^{2/3}\qquad
+    E_1=\gamma_1n_s^{2/3}
+\end{Equation}
+
+这里$\gamma_0,\gamma_1$是新的系数，它们有$\gamma_0=\SI{2.12e-12}{V.m^{4/3}}$和$\gamma_1=\SI{3.73e-12}{V.m^{4/2}}$的实验值。至此，我们建立了二维电子气浓度$n_s$和电子前两个本征能级$E_0$和$E_1$间的联系。
+
+\begin{BoxFormula}[电子本征能级]
+    电子本征能级可以用电子气浓度$n_s$表示为
+    \begin{Equation}
+        E_0=\gamma_0n_s^{2/3}\qquad
+        E_1=\gamma_1n_s^{2/3}
+    \end{Equation}
+\end{BoxFormula}
+
+电子气浓度服从费米--狄拉克分布
+\begin{Equation}
+    \qquad\qquad
+    n_s=D\Int[E_0][E_1]\frac{\dd{E}}{1+\exp[(E-E_f)/V_{th}]}+2D\Int[E_1][\infty]\frac{\dd{E}}{1+\exp[(E-E_f)/V_{th}]}
+    \qquad\qquad
+\end{Equation}
+这里$D$是态密度（Denisty of States, DOS），取$D=\SI{3.24e17}{V^{-1}.m^{-2}}$
+\begin{itemize}
+    \item 在$E=E_0$至$E=E_1$的范围内，态密度为$D$
+    \item 在$E=E_1$至$E=\infty$的范围内，态密度为$2D$
+\end{itemize}
+该积分的结果是
+\begin{BoxFormula}[电子气浓度的费米--狄拉克分布]
+    电子气浓度$n_s$服从费米--狄拉克分布
+    \begin{Equation}
+        n_s=DV_{th}\qty[\ln(1+\exp\frac{E_f-E_0}{V_{th}})+\ln(1+\exp\frac{E_f-E_1}{V_{th}})]
+    \end{Equation}
+\end{BoxFormula}
+电子气浓度还与表面势有关
+\begin{BoxFormula}[电子气浓度与表面势]
+    电子气浓度$n_s$与表面势$\psi$呈线性关系
+    \begin{Equation}
+        n_s=\frac{C_g}{q}(V_{go}-\psi)
+    \end{Equation}
+\end{BoxFormula}
+其中，$V_{go}$是$V_{go}=V_g-V_{off}$，$V_g$为栅压，$V_{off}=-\SI{2}{V}$为器件的关断电压。$C_g=\epsilon/t_{bar}$是器件中\cx{AlGaN}层的单位面积电容，$t_{bar}=\SI{2.5e-8}{m}$则相应的是器件\cx{AlGaN}层的厚度。
+
+\begin{BoxDefinition}[$V_{go}$][Vgo]
+    $V_{go}$定义为
+    \begin{Equation}
+        V_{go}=V_g-V_{off}
+    \end{Equation}
+\end{BoxDefinition}
+\begin{BoxDefinition}[$C_g$][Cg]
+    $C_g$定义为
+    \begin{Equation}
+        C_g=\frac{\epsilon}{t_{bar}}
+    \end{Equation}
+\end{BoxDefinition}
+
+至此，我们就得到了我们所需的两个方程
+\begin{Gather}[10pt]
+    n_s=DV_{th}\qty[\ln(1+\exp\frac{E_f-E_0}{V_{th}})+\ln(1+\exp\frac{E_f-E_1}{V_{th}})]\\
+    n_s=\frac{C_g}{q}(V_{go}-E_f)
+\end{Gather}
+这里说明如下
+\begin{itemize}
+    \item $E_0,E_1$可以通过\xref{fml:电子本征能级}简单代换为$n_s$，不是独立未知量。
+    \item $E_f$和$n_s$是该方程组的未知量，我们的目的是解出$E_f$关于$V_g$的表达式。
+    \item 或许注意到，\xref{fml:电子气浓度与表面势}出现在该处时表面势$\psi$被$E_f$所替换，而依据\xref{def:表面势}我们知道有$\psi=E_f+V_x$，那么为何这里能取$V_x=0$？这是因为我们已明确$E_f$与$V_x$无关。换言之，无论$V_x$如何变化$E_f$都是固定的，故求解$E_f$时$V_x$取任何值均是可行的，那不妨取$V_x=0$。当然，二维电子气浓度$n_s=C_g(V_{go}-\psi)/q=C_g(V_{go}-E_f-V_x)/q$仍然会与电势$V_x$有关，对于某一栅压$V_{go}$下确定的$E_f$，若$V_x$不同，那$n_s$也会相应不同。
+\end{itemize}
+
+\subsection{费米能级的求解}
+接下来，我们要对方程组进行求解以得到$E_f$关于$V_g$的表达式。然而，直接求解是相当复杂的，为此，我们可以划分出若干工作区，在每个工作区内适用符合该工作区特点的近似，随后通过恰当的过渡函数将各工作区的表达式平滑的连接在一起。我们共划分了以下三个工作区
+\begin{itemize}
+    \item 当$V_{g}<V_{off}$，称为截止区，标记为$E_{f,sub}$（Sub $V_{off}$）。
+    \item 当$V_{g}>V_{off}$且$E_f<E_0$，称为弱2DEG区，标记为$E_{f,above1}$（Above $V_{off}$）。
+    \item 当$V_{g}>V_{off}$且$E_f>E_0$，称为强2DEG区，标记为$E_{f,above2}$（Above $V_{off}$）。
+\end{itemize}
+
+\subsubsection{费米能级--截止区}\setpeq{费米能级--截止区}
+我们从\xref{fml:电子气浓度的费米--狄拉克分布}开始
+\begin{Equation}&[1]
+    n_s=DV_{th}\qty[\ln(1+\exp\frac{E_f-E_0}{V_{th}})+\ln(1+\exp\frac{E_f-E_1}{V_{th}})]
+\end{Equation}
+该区域内，$E_f$为负且$|E_F|\gg E_0,E_1$，因而
+\begin{Equation}&[2]
+    n_s=DV_{th}\qty[\ln(1+\exp\frac{E_f}{V_{th}})+\ln(1+\exp\frac{E_f}{V_{th}})]
+\end{Equation}
+即有
+\begin{Equation}&[3]
+    n_s=2DV_{th}\ln(1+\exp\frac{E_f}{V_{th}})
+\end{Equation}
+由于$E_f$为负，故$\exp(E_f/V_{th})$是一个很小的量，视其为$x$并适用$\ln(1+x)=x$的近似
+\begin{Equation}&[4]
+    n_s=2DV_{th}\exp\frac{E_f}{V_{th}}
+\end{Equation}
+该区域内，$E_f$可以近似为$V_{go}$
+\begin{Equation}&[5]
+    n_s=2DV_{th}\exp\frac{V_{go}}{V_{th}}
+\end{Equation}
+而\xref{fml:电子气浓度与表面势}又告诉我们了如何通过$n_s$得到$E_f$
+\begin{Equation}&[6]
+    E_f=V_{go}-\frac{qn_s}{C_g}=V_{go}-\frac{2qDV_{th}}{C_g}\exp\frac{V_{go}}{V_{th}}
+\end{Equation}
+% 在\xrefpeq{6}中代入\xrefpeq{5}
+% \begin{Equation}
+%     E_f=
+% \end{Equation}
+这里求得的$E_f$就是截止区的费米能级$E_{f,sub}$，整理如下
+\begin{BoxFormula}[费米能级--截止区]
+    费米能级在截止区为
+    \begin{Equation}
+        E_{f,sub}=V_{go}-\frac{2qDV_{th}}{C_g}\exp\frac{V_{go}}{V_{th}}
+    \end{Equation}
+\end{BoxFormula}
+
+\subsubsection{费米能级--弱2DEG区}\setpeq{费米能级--弱2DEG区}
+我们从\xref{fml:电子气浓度的费米--狄拉克分布}开始
+\begin{Equation}&[1]
+    n_s=DV_{th}\qty[\ln(1+\exp\frac{E_f-E_0}{V_{th}})+\ln(1+\exp\frac{E_f-E_1}{V_{th}})]
+\end{Equation}
+该区域内，$E_f$为正，$E_f<E_0$，$E_f\ll E_1$，因而$E_1$的那一指数项可以忽略
+\begin{Equation}&[2]
+    n_s=DV_{th}\qty[\ln(1+\exp\frac{E_f-E_0}{V_{th}})]
+\end{Equation}
+由于$E_f<E_0$，故$\exp[(E_f-E_0)/V_{th}]\ll 1$，视其为$x$并适用$\ln(1+x)=x$
+\begin{Equation}&[3]
+    n_s=DV_{th}\exp\frac{E_f-E_0}{V_{th}}
+\end{Equation}
+我们可以证明，将\xrefpeq{3}和\xref{fml:电子气浓度与表面势}以及\xref{fml:电子本征能级}联立后可解出$E_f=E_{f,above1}$为
+\begin{BoxFormula}[费米能级--弱2DEG区]
+    费米能级在弱2DEG区为
+    \begin{Equation}
+        E_{f,above1}=V_{go}\qty[\frac{V_{th}\ln(\beta V_{go})+\gamma_0(C_gV_{go}/q)^{2/3}}{V_{go}+V_{th}+(2\gamma_0/3)(C_gV_{go}/q)^{2/3}}]
+    \end{Equation}
+\end{BoxFormula}
+
+这里的$\beta$是一个常系数，定义如下
+\begin{BoxDefinition}[$\beta$][beta]
+    $\beta$定义为
+    \begin{Equation}
+        \beta=\frac{C_g}{D \kB T}
+    \end{Equation}
+\end{BoxDefinition}
+
+\subsubsection{费米能级--强2DEG区}\setpeq{费米能级--强2DEG区}
+我们从\xref{fml:电子气浓度的费米--狄拉克分布}开始
+\begin{Equation}&[1]
+    n_s=DV_{th}\qty[\ln(1+\exp\frac{E_f-E_0}{V_{th}})+\ln(1+\exp\frac{E_f-E_1}{V_{th}})]
+\end{Equation}
+该区域内，$E_f$为正，$E_f<E_0$，$E_f\ll E_1$，因而$E_1$的那一指数项可以忽略
+\begin{Equation}&[2]
+    n_s=DV_{th}\qty[\ln(1+\exp\frac{E_f-E_0}{V_{th}})]
+\end{Equation}
+由于$E_f>E_0$，故$\exp[(E_f-E_0)/V_{th}]\gg 1$，视其为$x$并适用$\ln(1+x)=\ln x$
+\begin{Equation}&[3]
+    n_s=DV_{th}\frac{E_f-E_0}{V_{th}}
+\end{Equation}
+我们可以证明，将\xrefpeq{3}和\xref{fml:电子气浓度与表面势}以及\xref{fml:电子本征能级}联立后可解出$E_f=E_{f,above2}$为
+\begin{BoxFormula}[费米能级--强2DEG区]
+    费米能级在强2DEG区为
+    \begin{Equation}
+        E_{f,above2}=V_{go}\qty[\frac{V_{th}(\beta V_{go})+\gamma_0(C_gV_{go}/q)^{2/3}}{V_{go}(1+\beta V_{th})+(2\gamma_0/3)(C_gV_{go}/q)^{2/3}}]
+    \end{Equation}
+\end{BoxFormula}
+
+\subsubsection{费米能级--2DEG区}
+现在，我们试图联合$E_{f,above1}$和$E_{f,above2}$为$E_{f,above}$，构建统一的2DEG区公式，结论如下。
+\begin{BoxFormula}[费米能级--2DEG区]
+    费米能级在2DEG区为
+    \begin{Equation}
+        E_{f,above}=V_{go}[1-H(V_{go})]
+    \end{Equation}
+\end{BoxFormula}
+其中$H(V_{go})$是一个关于$V_{go}$的重要函数
+\begin{BoxDefinition}[$H(V_{go})$][H(Vgo)]
+    $H(V_{go})$函数定义为
+    \begin{Equation}
+        H(V_{go})=\frac{V_{go}+V_{th}[1-\ln(\beta V_{gon})]-(\gamma_0/3)(C_gV_{go}/q)^{2/3}}{V_{go}(1+V_{th}/V_{god})+(2\gamma_0/3)(C_gV_{go}/q)^{2/3}}
+    \end{Equation}
+\end{BoxDefinition}
+其中$V_{gon},V_{god}$是$H(V_{go})$中有关$V_{go}$的中间表达式
+\begin{BoxDefinition}[$V_{gon}$][Vgon]
+    $V_{gon}$定义为
+    \begin{Equation}
+        V_{gon}(V_{go})=\frac{V_{go}\alpha_n}{\sqrt{V_{go}^2+\alpha_n^2}}
+    \end{Equation}
+\end{BoxDefinition}
+\begin{BoxDefinition}[$V_{god}$][Vgod]
+    $V_{god}$定义为
+    \begin{Equation}
+        V_{god}(V_{go})=\frac{V_{go}\alpha_d}{\sqrt{V_{go}^2+\alpha_d^2}}
+    \end{Equation}
+\end{BoxDefinition}
+其中$\alpha_n,\alpha_d$是有关$\beta$的量
+\begin{BoxDefinition}[$\alpha_n$][an]
+    $\alpha_n$定义为
+    \begin{Equation}
+        \alpha_n=\frac{\e}{\beta}
+    \end{Equation}
+\end{BoxDefinition}
+\begin{BoxDefinition}[$\alpha_d$][ad]
+    $\alpha_d$定义为
+    \begin{Equation}
+        \alpha_n=\frac{1}{\beta}
+    \end{Equation}
+\end{BoxDefinition}
+应说明的是，\xref{def:an}中$\alpha_n=\e/\beta$的定义中的$\e$就是欧拉常数$\e=2.71828$。
+
+\subsubsection{费米能级--统一公式}
+最终，我们给出$E_{f,unified}$的公式，它将统一截止区、弱2DEG区、强2DEG区的公式。
+\begin{BoxFormula}[费米能级]
+    费米能级的统一公式为
+    \begin{Equation}
+        \qquad\qquad
+        E_{f,unified}=V_{go}-\frac{2V_{th}\ln[1+\exp(V_{go}/(2V_{th}))]}{1/H(V_{go,eff})+[C_g/(qD)]\exp(-V_{go}/(2V_{th}))}
+        \qquad\qquad
+    \end{Equation}
+\end{BoxFormula}
+其中$V_{go,eff}$是$V_{go}$的一个变种，它在$V_{go}\to 0$的过程中更为平缓，定义如下
+\begin{BoxDefinition}[$V_{go,eff}$][Vgoeff]
+    $V_{go,eff}$定义为
+    \begin{Equation}
+        V_{go,eff}=\frac{1}{2}\qty(V_{go}+\sqrt{V_{go}+4ep_{psi}^2})
+    \end{Equation}
+\end{BoxDefinition}
+其中$ep_{psi}=0.3$是一个模型的平滑常数，常用于构建各类平滑量（例如$V_{go,eff}$与之$V_{go}$）。
+
+\xref{fml:费米能级}给出的$E_{f,unified}$将作为后文中对费米能级的认知，即后文默认$E_f=E_{f,unified}$，至此，我们成功推导出了费米能级$E_f$与栅压$V_g$的关系式，且该结果可以适用于各工作区。
+
+\subsection{费米能级的可视化}
+
+\xref{fig:费米能级}和\xref{fig:电子气浓度}分别展示了费米能级$E_f=E_{f,unified}$，及基于此$E_f$依据\xref{fml:电子气浓度与表面势}计算得到的二维电子气浓度$n_s$（当$V_x=0$时），随栅压$V_g$变化的曲线，我们注意到
+\begin{itemize}
+    \item 费米能级$E_f$随栅压$V_g$的增大而增大，变化范围在$\SI{-1}{V}$至$\SI{+1}{V}$间。
+    \item 费米能级$E_f$在$V_{g}<V_{off}$时大致为负。
+    \item 费米能级$E_f$在$V_{g}>V_{off}$时大致为正。
+    \item 二维电子气浓度$n_s$同样随栅压$V_g$的增大而增大，当$V_g$低于$V_{off}$时迅速减小。
+    \item 二维电子气浓度$n_s$在导通时的数量级约在$\SI{1e16}{m^{-2}}$至$\SI{1e17}{m^{-2}}$间。
+\end{itemize}
+\begin{Figure}[电子气浓度与费米能级]
+    \begin{FigureSub}[费米能级]
+        \includegraphics[scale=0.8]{build/Chapter02A_01a.fig.pdf}
+    \end{FigureSub}
+    \begin{FigureSub}[电子气浓度]
+        \includegraphics[scale=0.8]{build/Chapter02A_01f.fig.pdf}
+    \end{FigureSub}
+\end{Figure}
+
+\xref{fig:电子本征能级与费米能级的对比}展示了$E_f$与$E_0,E_1$的对比，我们注意到
+
+\begin{itemize}
+    \item $E_0,E_1$在$V_g<V_{off}$基本相等且为零。
+    \item $E_0,E_1$在$V_g>V_{off}$时随$V_g$的增大而增大，且$E_0<E_1$。
+    \item $E_f$会在$V_g$略大于$V_{off}$的某点处超过$E_0$，这构成了强弱2DEG的分界。
+    \item $E_f$在$V_g<V_{off}$时其绝对值$|E_f|\gg E_0,E_1$，符合先前截止区的假设。
+    \item $E_f$在$V_g>V_{off}$时有些过分贴近$E_1$，甚至$E_f$在$V_g$足够大时会超过$E_1$，这与先前在弱2DEG区和强2DEG区做出的$E_f\ll E_1$的假设不符，这是此处尚存的一个疑点。
+\end{itemize}
+关于本小节所有图像中的两条虚线
+\begin{itemize}
+    \item 第一条虚线代表$V_g=V_{off}$，即弱2DEG区与截止区的分界线。
+    \item 第二条虚线代表$V_g$使$E_f=E_0$的点，即弱2DEG区与强2DEG区的分界线。
+\end{itemize}
+\begin{Figure}[电子本征能级与费米能级的对比]
+    \includegraphics[scale=0.8]{build/Chapter02A_01b.fig.pdf}
+\end{Figure}\goodbreak
+
+\xref{fig:各近似式的全览}展示了各工作区的近似式$E_{f,sub},E_{f,above1},E_{f,above2}$的结果，\xref{fig:Efabove拟合}和\xref{fig:Efuni拟合}放大了$V_g$在$V_{off}$附近的区域，分别展示了$E_{f,above}$和$E_{f,unified}$对各工作区近似的贴合性
+\begin{itemize}
+    \item $E_{f,sub}$仅在$V_g<V_{off}$时有效，当$V_g$贴近$V_{off}$时$E_{f,sub}$快速趋于负无穷并失效。
+    \item $E_{f,above1},E_{f,above2}$仅在$V_g>V_{off}$时有效，两者均自$V_g=V_{off}$开始，随$V_{g}$的增大而增大，且相对而言，强2DEG区的$E_{f,above2}$比弱2DEG区的$E_{f,above1}$增长的快一些。
+    \item $E_{f,above}$在弱2DEG区和强2DEG区正确贴合了$E_{f,above1}$和$E_{f,above2}$的曲线。
+    \item $E_{f,unified}$在各工作区均正确贴合了相应近似式，符合其统一公式的地位。
+\end{itemize}
+\begin{Figure}[费米能级各近似式]
+    \begin{FigureSub}[各近似式的全览]
+        \includegraphics[scale=0.8]{build/Chapter02A_01c.fig.pdf}
+    \end{FigureSub}\\ \vspace{0.25cm}
+    \begin{FigureSub}[$E_{f,above}$的拟合效果;Efabove拟合]
+        \includegraphics[scale=0.8]{build/Chapter02A_01d.fig.pdf}
+    \end{FigureSub}
+    \begin{FigureSub}[$E_{f,unified}$的拟合效果;Efuni拟合]
+        \includegraphics[scale=0.8]{build/Chapter02A_01e.fig.pdf}
+    \end{FigureSub}
+\end{Figure}
