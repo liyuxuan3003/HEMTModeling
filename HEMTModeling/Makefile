@@ -1,4 +1,4 @@
-PROJECT:=AnalogICNew
+PROJECT:=HEMTModeling
 
 BUILD_DIR:=build
 

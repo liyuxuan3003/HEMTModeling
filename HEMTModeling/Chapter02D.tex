@@ -1,0 +1,78 @@
+\section{通道电阻和接触电阻计算}
+实际上，源极和漏极与沟道之间都存在相当的电阻，这由两部分组成
+\begin{itemize}
+    \item 通道电阻（Access Region Resistance）：指源或漏与沟道之间区域的电阻。这里需要解释一下，在HEMT中，栅的边界并不会紧贴源和漏，相反，栅与源和漏之间有相当一段距离，这段距离被称为通道区（Access Region），通道电阻相当重要且具有非线性特性。
+    \item 接触电阻（Contact Resistance）：指源或漏与其金属间的金半接触电阻。
+\end{itemize}
+
+以下我们均先以源端的通道电阻和接触电阻为例计算，漏端的情形与源端完全一致。
+
+\subsection{通道电阻}
+通道电阻$R_{acc,s}$最基本的一个表达式是（这里下标$s$代表源端，而$acc$代表通道）
+\begin{Equation}
+    R_{acc,s}=\frac{L_{SG}}{W\cdot N_F\cdot q\cdot n_{s,acc,s}\cdot \mu_{acc,s}}
+\end{Equation}
+这里做一些解释：首先，我们或许还记得半导体物理告诉我们电导率$\sigma= qn\mu$，这是电阻表达式的核心部分，这里，$n_{s,acc,s}$是通道处的电子气浓度，$\mu_{acc,s}$是通道处的电子迁移率，它们都是常数，取$n_{s0,acc,s}=\SI{1e17}{m^{-2}}$和$\mu_{acc,s}=\SI{0.155}{m^2.V^{-1}.s^{-1}}$，沟道下这两个物理量的情况参见\xref{fig:迁移率受速度饱和效应的影响}和\xref{fig:电子气浓度}。随后，从电导率到电阻，显然还需要一些长宽的系数，$L_{SG}$是源至栅的距离，也就是通道区的长度，$W$是晶体管宽度，取$L_{SG}=\SI{1}{um}$，作为参照，晶体管的宽和长也是取$W=\SI{1}{um}$和$L=\SI{1}{um}$。另外，$N_F$代表Number of Fingers，$N_F$是与版图结构有关的整数，默认取$N_F=1$，简单来说，这里可以认为$W\cdot N_F$是代表了等效的宽度。\footnote{原文$n_{s,acc,s}=\SI{5e17}{m^{-2}}$，该值任老师认为太高，改为$n_{s,acc,s}=\SI{1e17}{m^{-2}}$。}\goodbreak
+
+但仅这样是不够的，由于沟道电流$I_d$与通道区电流$I_{acc,s}$应相等（并不清楚$I_{acc,s}$的表达式以及$I_{acc,s}=I_d$的影响，这只是原文对以下修正的说明），通道电阻应修正为
+\begin{Equation}
+    R_{acc,s}=\frac{L_{SG}}{W\cdot N_F\cdot q\cdot n_{s,acc,s}\cdot \mu_{acc,s}}\qty[1-\qty(\frac{I_d}{I_{sat,acc,s}})^{m_{acc,s}}]^{-1/m_{acc,s}}
+\end{Equation}
+这里$m_{acc,s}$是一个指数项，取$m_{acc,s}=2$，而$I_{sat,acc,s}$是通道电流$I_{acc,s}$的最大值
+\begin{Equation}
+    I_{sat,acc,s}=W\cdot N_F\cdot n_{s,acc,s}\cdot v_{sat,acc,s}
+\end{Equation}
+这里$v_{sat,acc,s}$是通道区载流子的饱和速度，取$\SI{2e5}{m.s^{-1}}$。\footnote{原文$v_{sat,acc,s}=\SI{0.5e5}{m.s^{-1}}$，该值任老师认为太高，改为$v_{sat,acc,s}=\SI{2e5}{m.s^{-1}}$。}
+
+\begin{BoxFormula}[源侧通道电阻]
+    源侧通道电阻$R_{acc,s}$可以表示为
+    \begin{Equation}
+        \qquad\qquad
+        R_{acc,s}=\frac{L_{SG}}{W\cdot N_F\cdot q\cdot n_{s,acc,s}\cdot \mu_{acc,s}}\qty[1-\qty(\frac{I_d}{I_{sat,acc,s}})^{m_{acc,s}}]^{-1/m_{acc,s}}
+        \qquad\qquad
+    \end{Equation}
+    源侧通道区饱和电流$I_{sat,acc,s}$可以表示为
+    \begin{Equation}
+        I_{sat,acc,s}=W\cdot N_F\cdot n_{s,acc,s}\cdot v_{sat,acc,s}
+    \end{Equation}
+\end{BoxFormula}
+对应的写出漏端的公式
+\begin{BoxFormula}[漏侧通道电阻]
+    漏侧通道电阻$R_{acc,d}$可以表示为
+    \begin{Equation}
+        \qquad\qquad
+        R_{acc,d}=\frac{L_{DG}}{W\cdot N_F\cdot q\cdot n_{s,acc,d}\cdot \mu_{acc,d}}\qty[1-\qty(\frac{I_d}{I_{sat,acc,d}})^{m_{acc,d}}]^{-1/m_{acc,d}}
+        \qquad\qquad
+    \end{Equation}
+    漏侧通道区饱和电流$I_{sat,acc,d}$可以表示为
+    \begin{Equation}
+        I_{sat,acc,d}=W\cdot N_F\cdot n_{s,acc,d}\cdot v_{sat,acc,d}
+    \end{Equation}
+\end{BoxFormula}
+
+\subsection{接触电阻}
+接触电阻相较通道电阻简单很多，是一个定值。
+\begin{BoxFormula}[源侧接触电阻]
+    源侧接触电阻$R_{contact,s}$可以表示为
+    \begin{Equation}
+        R_{contact,s}=\frac{R_{sc}}{W\cdot N_F}
+    \end{Equation}
+\end{BoxFormula}
+这里$R_{sc}$取$R_{sc}=\SI{1e-4}{\ohm.m^{-1}}$，类似的，也可以写出漏极侧的公式。
+\begin{BoxFormula}[漏侧接触电阻]
+    漏侧接触电阻$R_{contact,d}$可以表示为
+    \begin{Equation}
+        R_{contact,d}=\frac{R_{dc}}{W\cdot N_F}
+    \end{Equation}
+\end{BoxFormula}
+
+\subsection{可视化分析}
+
+\xref{fig:通道电阻和接触电阻}展示了通道电阻和接触电阻随$I_d$的变化
+\begin{itemize}
+    \item 接触电阻$R_{acc}$在$I_d=0$时约为$\SI{400}{\ohm}$，其随$I_d$的增大而增大，并最终在$I_d=I_{sat,acc}$时（约为$\SI{3.2}{mA}$）趋于无穷大。这是合理的，通道电阻确实会限制了HEMT的最大电流，而$\SI{3}{mA}$左右的最大电流对于一个宽和长均为$\SI{1}{um}$的HEMT器件而言是合理的。
+    \item 通道电阻$R_{contact}$是一个定值，其约为$\SI{100}{\ohm}$。
+\end{itemize}
+\begin{Figure}[通道电阻和接触电阻]
+    \includegraphics[scale=0.8]{build/Chapter02D_01a.fig.pdf}
+\end{Figure}
