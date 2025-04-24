@@ -185,7 +185,7 @@ Kr->xKr,Qchd->xQchd,Qchs->xQchs,Sif->xSif,Sit->xSit
 {Cg Vth,(-Qchd+Qchs),(1/Qchd-1/Qchs),((Qchd^2-Qchs^2)/2),Log[Qchd/Qchs]}//.Join[rval,rfunc,{W->1u,L->1u,Vg->2,Vd->1,Vs->0,mu->mueffsat}]
 
 
-ff1={xSifInt}//.Join[rval,rfunc,{W->1u,L->1u,Vg->2,Vd->1,Vs->0,mu->mueffsat}];
+ff1={xSif}//.Join[rval,rfunc,{W->1u,L->1u,Vg->2,Vd->1,Vs->0,mu->mueffsat}];
 LogLinearPlot[Evaluate@ff1,{fx,1,10^20},Evaluate@xFigConfig]
 
 
@@ -197,7 +197,7 @@ fSitVg=Table[xSit//.Join[rval,rfunc,{W->1u,L->1u,Vs->0,mu->mueffsat}],{Vd,{1,2,4
 Plot[fSitVg,{Vg,-5,5},PlotPoints->200,Evaluate@xFigConfig]
 
 
-fSitVd=Table[xSit//.Join[rval,rfunc,{W->1u,L->1u,Vs->0,mu->mueffsat}],{Vg,{1,2,4}}];
+fSitVd=Table[xSit//.Join[rval,rfunc,{W->1u,L->1u,Vs->0,mu->mueffsat}],{Vg,{0,1,2,4}}];
 Plot[fSitVd,{Vd,0,5},PlotPoints->200,Evaluate@xFigConfig]
 
 
